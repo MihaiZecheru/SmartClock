@@ -3,9 +3,13 @@
 
 TFT_eSPI tft = TFT_eSPI();
 
+#include "Enums.h"
+#include "Screens.h"
+
 void setup()
 {
-  draw_home_screen(15, 53, Tuesday)
+  init_tft();
+  draw_home_screen(15, 5, Tuesday, April, 19);
 }
 
 void loop()
