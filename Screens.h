@@ -133,7 +133,7 @@ void draw_weather_screen(
   newline();
 
   tft.setTextColor(SECONDARY);
-  tft.print("UV Index: ");
+  tft.print("UV index: ");
   tft.setTextColor(PRIMARY);
   tft.print(uv_index_str);
   newline();
@@ -145,4 +145,92 @@ void draw_weather_screen(
   tft.print(precipitation_pc_str);
   newline();
   tft.print(precipitation_mm_str);
+}
+
+void draw_daymoon_screen(
+  uint8_t sunrise_time_h, uint8_t sunrise_time_m,
+  uint8_t sunset_time_h, uint8_t sunset_time_m,
+  uint8_t day_length_h, uint8_t day_length_m,
+  uint8_t days_until_solstice,
+  MoonPhase current_moon_phase,
+  uint8_t days_to_next_full_moon,
+  uint16_t day_of_the_year,
+  uint8_t week_of_the_year
+)
+{
+  clear_screen();
+  uint8_t text_size = 2;
+  tft.setTextSize(text_size);
+  tft.setTextColor(SECONDARY);
+
+  // Generate display strings
+  char sunrise_time_str[50];
+  sprintf(sunrise_time_str, "%d:%d", sunrise_time_h, sunrise_time_m);
+  char sunset_time_str[50];
+  sprintf(sunset_time_str, "%d:%d", sunset_time_h, sunset_time_m);
+  char day_length_str[50];
+  sprintf(day_length_str, "%dh %dm", day_length_h, day_length_m);
+  char days_until_solstice_str[50];
+  sprintf(days_until_solstice_str, "%d days", days_until_solstice);
+  char days_to_full_moon_str[50];
+  sprintf(days_to_full_moon_str, "%d days", days_to_next_full_moon);
+  char day_of_the_year_str[50];
+  sprintf(day_of_the_year_str, "%d / 365", day_of_the_year);
+  char week_of_the_year_str[50];
+  sprintf(week_of_the_year_str, "%d / 52", week_of_the_year);
+
+  // Positioning
+  uint8_t left_margin = 10;
+  uint8_t top_margin = 10;
+  auto newline = [left_margin, &top_margin, text_size]() -> void { top_margin += text_size * charsize_h + 10; tft.setCursor(left_margin, top_margin); }; // move to next line
+  tft.setCursor(left_margin, top_margin);
+
+  // Write values
+  tft.setTextColor(SECONDARY);
+  tft.print("Sunrise: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(sunrise_time_str);
+  newline();
+
+  tft.setTextColor(SECONDARY);
+  tft.print("Sunset: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(sunset_time_str);
+  newline();
+
+  tft.setTextColor(SECONDARY);
+  tft.print("Day length: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(day_length_str);
+  newline();
+
+  tft.setTextColor(SECONDARY);
+  tft.print("Next solstice: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(days_until_solstice_str);
+  newline();
+
+  tft.setTextColor(SECONDARY);
+  tft.print("Moon: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(MoonPhaseStrings[current_moon_phase]);
+  newline();
+
+  tft.setTextColor(SECONDARY);
+  tft.print("Next full moon: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(days_to_full_moon_str);
+  newline();
+  
+  tft.setTextColor(SECONDARY);
+  tft.print("Current day: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(day_of_the_year_str);
+  newline();
+
+  tft.setTextColor(SECONDARY);
+  tft.print("Current week: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(week_of_the_year_str);
+  newline();
 }

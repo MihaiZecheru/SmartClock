@@ -19,4 +19,6 @@ void loop()
   delay(switch_delay);
   draw_weather_screen(Rainy, 19, 25, 40, 60, 5, 10, 7, 8, 60, 100, 1.15, 3.25);
   delay(switch_delay);
+  draw_daymoon_screen(5, 34, 7, 15, 13, 41, 72, WaxingGibbous, 5, 261, 34);
+  delay(switch_delay);
 }
