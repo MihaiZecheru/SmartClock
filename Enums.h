@@ -9,8 +9,8 @@ enum Month { January, February, March, April, May, June, July, August, September
 const char* MonthStrings[12] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 // WeatherOverview enum
-enum WeatherOverview { Sunny, Cloudy, Rainy, Windy };
-const char* WeatherStrings[4] = { "Sunny", "Cloudy", "Rainy", "Windy" };
+enum WeatherOverview { Clear, Cloudy, Rainy, Windy, Snowy, Misty, Smokey, Hazy, Dusty, Foggy };
+const char* WeatherStrings[10] = { "Clear", "Cloudy", "Rainy", "Windy", "Snowy", "Misty", "Smokey", "Hazy", "Dusty", "Foggy" };
 
 // MoonPhase enum
 enum MoonPhase { NewMoon, WaxingCrescent, FirstQuarter, WaxingGibbous, FullMoon, WaningGibbous, LastQuarter, WaningCrescent };
