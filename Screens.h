@@ -73,6 +73,7 @@ void draw_weather_screen(
   uint8_t humidity_curr_pc, uint8_t humidity_max_pc,
   uint8_t wind_curr_kmph, uint8_t wind_max_kmph,
   uint8_t uv_index_curr, uint8_t uv_index_max,
+  uint8_t cloudiness_curr_pc, uint8_t cloudiness_max_pc,
   uint8_t precipitation_curr_pc, uint8_t precipitation_max_pc,
   float precipitation_curr_mm, float precipitation_max_mm
 )
@@ -91,6 +92,8 @@ void draw_weather_screen(
   sprintf(wind_str, "       %dkmh / %dkmh", wind_curr_kmph, wind_max_kmph);
   char uv_index_str[50];
   sprintf(uv_index_str, "   %d / %d", uv_index_curr, uv_index_max);
+  char cloudiness_str[50];
+  sprintf(cloudiness_str, " %d%% / %d%%", cloudiness_curr_pc, cloudiness_max_pc);
   char precipitation_pc_str[50];
   sprintf(precipitation_pc_str, "    %d%% / %d%%", precipitation_curr_pc, precipitation_max_pc);
   char precipitation_mm_str[50];
@@ -105,15 +108,15 @@ void draw_weather_screen(
   // Position the values
   tft.setTextColor(SECONDARY);
   tft.setTextSize(3); // weather overview is a little bit larger
-  tft.print("Today is ");
+  tft.print("Currently ");
   tft.setTextColor(PRIMARY);
   tft.print(WeatherStrings[weather_overview]);
   top_margin += 3 * charsize_h + 10;
   tft.setCursor(left_margin, top_margin);
 
   tft.setTextSize(text_size); // back to 2
-  top_margin += 16;
-  tft.setCursor(left_margin, top_margin);
+  // top_margin += 16;
+  // tft.setCursor(left_margin, top_margin);
   tft.setTextColor(SECONDARY);
   tft.print("Temperature: ");
   tft.setTextColor(PRIMARY);
@@ -139,6 +142,12 @@ void draw_weather_screen(
   newline();
 
   tft.setTextColor(SECONDARY);
+  tft.print("Cloudiness: ");
+  tft.setTextColor(PRIMARY);
+  tft.print(cloudiness_str);
+  newline();
+
+  tft.setTextColor(SECONDARY);
   tft.print("Precipitation:");
   newline();
   tft.setTextColor(PRIMARY);
@@ -148,14 +157,15 @@ void draw_weather_screen(
 }
 
 void draw_daymoon_screen(
-  uint8_t sunrise_time_h, uint8_t sunrise_time_m,
-  uint8_t sunset_time_h, uint8_t sunset_time_m,
-  uint8_t day_length_h, uint8_t day_length_m,
+  String sunrise_time_str,
+  String sunset_time_str,
+  String day_length_str,
   uint8_t days_until_solstice,
   MoonPhase current_moon_phase,
   uint8_t days_to_next_full_moon,
   uint16_t day_of_the_year,
-  uint8_t week_of_the_year
+  uint8_t week_of_the_year,
+  bool is_leap_year
 )
 {
   clear_screen();
@@ -164,18 +174,15 @@ void draw_daymoon_screen(
   tft.setTextColor(SECONDARY);
 
   // Generate display strings
-  char sunrise_time_str[50];
-  sprintf(sunrise_time_str, "%d:%d", sunrise_time_h, sunrise_time_m);
-  char sunset_time_str[50];
-  sprintf(sunset_time_str, "%d:%d", sunset_time_h, sunset_time_m);
-  char day_length_str[50];
-  sprintf(day_length_str, "%dh %dm", day_length_h, day_length_m);
   char days_until_solstice_str[50];
   sprintf(days_until_solstice_str, "%d days", days_until_solstice);
   char days_to_full_moon_str[50];
   sprintf(days_to_full_moon_str, "%d days", days_to_next_full_moon);
   char day_of_the_year_str[50];
-  sprintf(day_of_the_year_str, "%d / 365", day_of_the_year);
+  if (is_leap_year)
+    sprintf(day_of_the_year_str, "%d / 366", day_of_the_year);
+  else
+    sprintf(day_of_the_year_str, "%d / 365", day_of_the_year);
   char week_of_the_year_str[50];
   sprintf(week_of_the_year_str, "%d / 52", week_of_the_year);
 
@@ -233,4 +240,25 @@ void draw_daymoon_screen(
   tft.setTextColor(PRIMARY);
   tft.print(week_of_the_year_str);
   newline();
+}
+
+void ShowWifiFailureScreen()
+{
+  clear_screen();
+  uint8_t text_size = 2;
+  tft.setTextSize(text_size);
+  tft.setTextColor(PRIMARY);
+  tft.print("Failed to conenct to wifi");
+  delay(90000000); // permanently blocking
+}
+
+void ShowGetFailureScreen(int code)
+{
+  clear_screen();
+  uint8_t text_size = 2;
+  tft.setTextSize(text_size);
+  tft.setTextColor(PRIMARY);
+  tft.print("GET req failure: ");
+  tft.print(code);
+  delay(90000000); // permanently blocking
 }
