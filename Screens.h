@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SCREENS_H
+#define SCREENS_H
 
 #include "Enums.h"
 
@@ -26,7 +27,7 @@ void init_tft()
  * @param monthday The day of the month. 18th, 5th, 31st, etc.
  */
 void draw_home_screen(
-  uint8_t hour, uint8_t minute,
+  String current_time,
   Weekday weekday, Month month, uint8_t monthday
 ) {
   clear_screen();
@@ -36,16 +37,12 @@ void draw_home_screen(
   tft.setTextSize(time_char_size);
   tft.setTextColor(PRIMARY);
 
-  // Format the time string
-  char timeStr[6];
-  sprintf(timeStr, "%02d:%02d", hour, minute);
-
   // Multiply by text size to scale
-  int16_t timeWidth = charsize_w * time_char_size * strlen(timeStr);
+  int16_t timeWidth = charsize_w * time_char_size * current_time.length();
   int16_t x_time = (tft.width() - timeWidth) / 2;
   int16_t y_time = 70; // vertical position
   tft.setCursor(x_time, y_time);
-  tft.print(timeStr);
+  tft.print(current_time);
 
   // --- Draw date ---
   uint8_t date_char_size = 3;
@@ -72,7 +69,7 @@ void draw_weather_screen(
   int8_t temp_curr_c, int8_t temp_max_c,
   uint8_t humidity_curr_pc, uint8_t humidity_max_pc,
   uint8_t wind_curr_kmph, uint8_t wind_max_kmph,
-  uint8_t uv_index_curr, uint8_t uv_index_max,
+  float uv_index_curr, float uv_index_max,
   uint8_t cloudiness_curr_pc, uint8_t cloudiness_max_pc,
   uint8_t precipitation_curr_pc, uint8_t precipitation_max_pc,
   float precipitation_curr_mm, float precipitation_max_mm
@@ -91,7 +88,7 @@ void draw_weather_screen(
   char wind_str[50];
   sprintf(wind_str, "       %dkmh / %dkmh", wind_curr_kmph, wind_max_kmph);
   char uv_index_str[50];
-  sprintf(uv_index_str, "   %d / %d", uv_index_curr, uv_index_max);
+  sprintf(uv_index_str, "   %.1f / %.1f", uv_index_curr, uv_index_max);
   char cloudiness_str[50];
   sprintf(cloudiness_str, " %d%% / %d%%", cloudiness_curr_pc, cloudiness_max_pc);
   char precipitation_pc_str[50];
@@ -183,6 +180,7 @@ void draw_daymoon_screen(
     sprintf(day_of_the_year_str, "%d / 366", day_of_the_year);
   else
     sprintf(day_of_the_year_str, "%d / 365", day_of_the_year);
+
   char week_of_the_year_str[50];
   sprintf(week_of_the_year_str, "%d / 52", week_of_the_year);
 
@@ -262,3 +260,5 @@ void ShowGetFailureScreen(int code)
   tft.print(code);
   delay(90000000); // permanently blocking
 }
+
+#endif
