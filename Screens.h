@@ -2,6 +2,7 @@
 #define SCREENS_H
 
 #include "Enums.h"
+#include "UnitSystem.h"
 
 // Approximate character size: 5x8 pixels per character at size 1
 #define charsize_w 6
@@ -19,7 +20,12 @@ void init_tft()
 {
   tft.init();
   tft.setRotation(1); // Landscape
+  
   clear_screen();
+  tft.setTextSize(2);
+  tft.setTextColor(PRIMARY);
+  tft.setCursor(10, 10);
+  tft.print("Initializing...");
 }
 
 /**
@@ -82,19 +88,28 @@ void draw_weather_screen(
 
   // Format strings
   char temp_str[50];
-  sprintf(temp_str, "%dC / %dC", temp_curr_c, temp_max_c);
+  if (ACTIVE_UNIT_SYSTEM == Metric) sprintf(temp_str, "%dC / %dC", temp_curr_c, temp_max_c);
+  else sprintf(temp_str, "%dF / %dF", (int8_t)round(temp_curr_c * 9/5 + 32), (int8_t)round(temp_max_c * 9/5 + 32));
+
   char humidity_str[50];
   sprintf(humidity_str, "   %d%% / %d%%", humidity_curr_pc, humidity_max_pc);
+
   char wind_str[50];
-  sprintf(wind_str, "       %dkmh / %dkmh", wind_curr_kmph, wind_max_kmph);
+  if (ACTIVE_UNIT_SYSTEM == Metric) sprintf(wind_str, "       %dkmh / %dkmh", wind_curr_kmph, wind_max_kmph);
+  else sprintf(wind_str, "       %dmph / %dmph", (uint8_t)round(wind_curr_kmph * 0.621371), (uint8_t)round(wind_max_kmph * 0.621371)); // There are 0.621371 km in a mile
+
   char uv_index_str[50];
   sprintf(uv_index_str, "   %.1f / %.1f", uv_index_curr, uv_index_max);
+
   char cloudiness_str[50];
   sprintf(cloudiness_str, " %d%% / %d%%", cloudiness_curr_pc, cloudiness_max_pc);
+
   char precipitation_pc_str[50];
   sprintf(precipitation_pc_str, "    %d%% / %d%%", precipitation_curr_pc, precipitation_max_pc);
+
   char precipitation_mm_str[50];
-  sprintf(precipitation_mm_str, "    %.2fmm / %.2fmm", precipitation_curr_mm, precipitation_max_mm);
+  if (ACTIVE_UNIT_SYSTEM == Metric) sprintf(precipitation_mm_str, "    %.2fmm / %.2fmm", precipitation_curr_mm, precipitation_max_mm);
+  else sprintf(precipitation_mm_str, "    %.2fin / %.2fin", precipitation_curr_mm * 0.0393701, precipitation_max_mm * 0.0393701); // There are 0.0393701 mm in an inch
 
   // Positioning
   uint8_t left_margin = 10;
@@ -246,7 +261,8 @@ void ShowWifiFailureScreen()
   uint8_t text_size = 2;
   tft.setTextSize(text_size);
   tft.setTextColor(PRIMARY);
-  tft.print("Failed to conenct to wifi");
+  tft.setCursor(10, 10);
+  tft.print("Wifi failed to conenct");
   delay(90000000); // permanently blocking
 }
 
@@ -259,6 +275,44 @@ void ShowGetFailureScreen(int code)
   tft.print("GET req failure: ");
   tft.print(code);
   delay(90000000); // permanently blocking
+}
+
+void draw_units_changed_screen()
+{
+  clear_screen();
+  uint8_t text_size = 2;
+  tft.setTextSize(text_size);
+  tft.setTextColor(SECONDARY);
+  
+  // Positioning
+  uint8_t left_margin = 10;
+  uint8_t top_margin = 10;
+  auto newline = [left_margin, &top_margin, text_size]() -> void { top_margin += text_size * charsize_h + 10; tft.setCursor(left_margin, top_margin); }; // move to next line
+  tft.setCursor(left_margin, top_margin);
+
+  tft.print("Weather data will now");
+  newline();
+  tft.print("be displayed using");
+  newline();
+  if (ACTIVE_UNIT_SYSTEM == Metric)
+  {
+    tft.setTextColor(PRIMARY);
+    tft.print("metric ");
+  }
+  else
+  {
+    tft.setTextColor(PRIMARY);
+    tft.print("imperial ");  
+  }
+  
+  tft.setTextColor(SECONDARY);
+  tft.print("units");
+
+  newline();
+  newline();
+  tft.print("Returning to home screen");
+  newline();
+  tft.print("in 5 seconds...");
 }
 
 #endif
