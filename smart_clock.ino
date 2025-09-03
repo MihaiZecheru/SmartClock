@@ -112,11 +112,13 @@ void loop()
   // UPDATE THE TIME EVERY 5 SECONDS
   if (curr_ms - last_time_update > TIME_UPDATE_DELAY_MS)
   {
+    uint8_t minute_before_update = curr_time.substring(curr_time.length() - 2).toInt();  
     update_date_and_time();
+    uint8_t minute_after_update = curr_time.substring(curr_time.length() - 2).toInt();  
     last_time_update = curr_ms;
 
     // Refresh the home screen if necessary
-    if (active_screen == HomeScreen)
+    if (active_screen == HomeScreen && minute_before_update != minute_after_update)
     {
       draw_home_screen(curr_time, curr_date.weekday, curr_date.month, curr_date.day);
     }
