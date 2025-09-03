@@ -172,12 +172,12 @@ void get_environment_data(
   // If it's a new day, just accept the high at face value. Replace the high fully.
   // If it's the middle of the day or any other time, increase the high if the forecast got higher or if the current data is higher
   *_weather_overview = strToWeatherOverview(doc["current"]["weather"][0]["main"]);
-  *_temperature_curr_c = doc["current"]["temp"];
-  *_temperature_max_c = new_day ? doc["daily"][0]["temp"]["max"] : max3(*_temperature_max_c, *_temperature_curr_c, doc["daily"][0]["temp"]["max"]);
+  *_temperature_curr_c = (int)round(doc["current"]["temp"].as<float>());
+  *_temperature_max_c = new_day ? (int)round(doc["daily"][0]["temp"]["max"].as<float>()) : max3(*_temperature_max_c, *_temperature_curr_c, (int)round(doc["daily"][0]["temp"]["max"].as<float>()));
   *_humidity_curr_pc = doc["current"]["humidity"];
   *_humidity_max_pc = new_day ? doc["daily"][0]["humidity"] : max3(*_humidity_max_pc, *_humidity_curr_pc, doc["daily"][0]["humidity"]);
-  *_wind_speed_curr_kmh = doc["current"]["wind"];
-  *_wind_speed_max_kmh = new_day ? doc["daily"][0]["wind_speed"] : max3(*_wind_speed_max_kmh, *_wind_speed_curr_kmh, doc["daily"][0]["wind_speed"]);
+  *_wind_speed_curr_kmh = (int)round(doc["current"]["wind_speed"].as<float>());
+  *_wind_speed_max_kmh = new_day ? (int)round(doc["daily"][0]["wind_speed"].as<float>()) : max3(*_wind_speed_max_kmh, *_wind_speed_curr_kmh, (int)round(doc["daily"][0]["wind_speed"].as<float>()));
   *_uv_index_curr = doc["current"]["uvi"];
   *_uv_index_max = new_day ? doc["daily"][0]["uvi"] : max3(*_uv_index_max, *_uv_index_curr, doc["daily"][0]["uvi"]);
   *_cloudiness_curr_pc = doc["current"]["clouds"];
