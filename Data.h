@@ -13,20 +13,20 @@ Weekday curr_weekday;
 
 // Weather data
 WeatherOverview weather_overview;
-int8_t temperature_curr_c;
-int8_t temperature_max_c;
-uint8_t humidity_curr_pc;
-uint8_t humidity_max_pc;
-uint8_t wind_speed_curr_kmh;
-uint8_t wind_speed_max_kmh;
-float uv_index_curr;
-float uv_index_max;
-uint8_t cloudiness_curr_pc;
-uint8_t cloudiness_max_pc;
-uint8_t precipitation_chances_curr_pc;
-uint8_t precipitation_chances_max_pc;
-float precipitation_amount_curr_mm;
-float precipitation_amount_max_mm;
+int8_t temperature_curr_c = -100;
+int8_t temperature_max_c = -100;
+uint8_t humidity_curr_pc = 0;
+uint8_t humidity_max_pc = 0;
+uint8_t wind_speed_curr_kmh = 0;
+uint8_t wind_speed_max_kmh = 0;
+float uv_index_curr = 0.0;
+float uv_index_max = 0.0;
+uint8_t cloudiness_curr_pc = 0;
+uint8_t cloudiness_max_pc = 0;
+uint8_t precipitation_chances_curr_pc = 0;
+uint8_t precipitation_chances_max_pc = 0;
+float precipitation_amount_curr_mm = 0.0;
+float precipitation_amount_max_mm = 0.0;
 
 // Sun/moon data
 String sunrise;
