@@ -56,7 +56,7 @@ int calculateDayOfYear(int year, int month, int day) {
  * Result: x / 52
  */
 int calculateWeekOfYear(int year, int month, int day) {
-  return ceil(calculateDayOfYear(year, month, day) / 7);
+  return ceil(calculateDayOfYear(year, month, day) / 7.0);
 }
 
 // Calculate days until next solstice
