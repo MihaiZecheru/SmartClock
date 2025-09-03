@@ -36,68 +36,27 @@ Solstice getNextSolstice(int year, int month, int day) {
   }
 }
 
-// x/365
+/**
+ * Calculate what day of the year it is
+ * where January 1st is the first day of the year.
+ */
 int calculateDayOfYear(int year, int month, int day) {
   int doy = 0;
-  for (int m = 1; m < month; m++) {
+  for (int m = 0; m < month; m++)
+  {
     doy += daysInMonth(m, year);
   }
   doy += day;
   return doy;
 }
 
-// Calculate ISO week number (week 1 = first week with a Thursday, Monday = first day)
+/**
+ * Roughly calculate the current week of the year by 
+ * just dividing the day of year by 7.
+ * Result: x / 52
+ */
 int calculateWeekOfYear(int year, int month, int day) {
-  // Create a tm structure
-  struct tm timeinfo;
-  timeinfo.tm_year = year - 1900;
-  timeinfo.tm_mon  = month - 1;
-  timeinfo.tm_mday = day;
-  timeinfo.tm_hour = 0;
-  timeinfo.tm_min  = 0;
-  timeinfo.tm_sec  = 0;
-
-  mktime(&timeinfo); // fills tm_wday (0=Sunday, 1=Monday, ...)
-
-  // ISO: Monday=1, Sunday=7
-  int weekday = timeinfo.tm_wday == 0 ? 7 : timeinfo.tm_wday;
-
-  // Thursday-based day-of-year
-  int doy = calculateDayOfYear(year, month, day);
-  int doyThursday = doy + (4 - weekday);
-
-  // Find Jan 1 Thursday-based offset
-  struct tm jan1;
-  jan1.tm_year = year - 1900;
-  jan1.tm_mon  = 0;
-  jan1.tm_mday = 1;
-  jan1.tm_hour = 0;
-  jan1.tm_min  = 0;
-  jan1.tm_sec  = 0;
-  mktime(&jan1);
-  int jan1Weekday = jan1.tm_wday == 0 ? 7 : jan1.tm_wday;
-
-  int week = (doyThursday - (4 - jan1Weekday) + 6) / 7;
-  if (week < 1) {
-    // Belongs to last week of previous year
-    return calculateWeekOfYear(year - 1, 12, 31);
-  } else if (week > 52) {
-    // Check if this belongs to week 1 of next year
-    struct tm dec31;
-    dec31.tm_year = year - 1900;
-    dec31.tm_mon  = 11;
-    dec31.tm_mday = 31;
-    dec31.tm_hour = 0;
-    dec31.tm_min  = 0;
-    dec31.tm_sec  = 0;
-    mktime(&dec31);
-    int dec31Weekday = dec31.tm_wday == 0 ? 7 : dec31.tm_wday;
-    int dec31Doy = calculateDayOfYear(year, 12, 31);
-    int dec31Thursday = dec31Doy + (4 - dec31Weekday);
-    if (dec31Thursday < doyThursday) week = 1;
-  }
-
-  return week;
+  return ceil(calculateDayOfYear(year, month, day) / 7);
 }
 
 // Calculate days until next solstice
