@@ -114,6 +114,12 @@ void loop()
   {
     update_date_and_time();
     last_time_update = curr_ms;
+
+    // Refresh the home screen if necessary
+    if (active_screen == HomeScreen)
+    {
+      draw_home_screen(curr_time, curr_date.weekday, curr_date.month, curr_date.day);
+    }
   }
 
   // SYNC RTC EVERY 45m
