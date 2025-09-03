@@ -43,7 +43,14 @@ void update_data()
   curr_time = get_current_time();
   curr_date = get_current_date();
 
+  // If it's hour 0 (midnight), it's a new day so the highs will be different
+  // Otherwise, the highs should be preserved because the API only does predictions and can sometimes
+  // give lower values than it previously gave for the highs that day
+  uint8_t current_hour = curr_time.substring(0, 2).toInt();
+  bool new_day = current_hour == 0;
+
   get_environment_data(
+    replace_highs,
     // Weather data
     &weather_overview,
     &temperature_curr_c,
