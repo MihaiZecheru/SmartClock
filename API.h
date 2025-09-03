@@ -95,15 +95,23 @@ uint8_t calculateDaysToFullMoon(float moonPhaseIndex)
   return days;
 }
 
+float max3(float a, float b, float c) {
+  return max(a, max(b, c));
+}
+
+int max3(int a, int b, int c) {
+  return max(a, max(b, c));
+}
+
 /**
  * Takes in a bunch of variables as pointers, queries the API,
  * and then populates the variables with the accurate data
- * @param replace_highs If it's hour 0 (midnight), it's a new day so the highs will be different
+ * @param new_day If it's hour 0 (midnight), it's a new day so the highs will be different
  * Otherwise, the highs should be preserved because the API only does predictions and can sometimes
  * give lower values than it previously gave for the highs that day
  */
 void get_environment_data(
-  new_day,
+  bool new_day,
   // Weather data
   WeatherOverview* _weather_overview,
   int8_t* _temperature_curr_c,
@@ -165,18 +173,17 @@ void get_environment_data(
   // If it's the middle of the day or any other time, increase the high if the forecast got higher or if the current data is higher
   *_weather_overview = strToWeatherOverview(doc["current"]["weather"][0]["main"]);
   *_temperature_curr_c = doc["current"]["temp"];
-  *_temperature_max_c = new_day ? doc["daily"][0]["temp"]["max"] : max(*_temperature_max_c, *_temperature_curr_c, doc["daily"][0]["temp"]["max"]);
-  *_temperature_max_c = max(*_temperature_max_c, *_temperature_curr_c);
+  *_temperature_max_c = new_day ? doc["daily"][0]["temp"]["max"] : max3(*_temperature_max_c, *_temperature_curr_c, doc["daily"][0]["temp"]["max"]);
   *_humidity_curr_pc = doc["current"]["humidity"];
-  *_humidity_max_pc = new_day ? doc["daily"][0]["humidity"] : max(*_humidity_max_pc, *_humidity_curr_pc, doc["daily"][0]["humidity"]);
+  *_humidity_max_pc = new_day ? doc["daily"][0]["humidity"] : max3(*_humidity_max_pc, *_humidity_curr_pc, doc["daily"][0]["humidity"]);
   *_wind_speed_curr_kmh = doc["current"]["wind"];
-  *_wind_speed_max_kmh = new_day ? doc["daily"][0]["wind_speed"] : max(*_wind_speed_max_kmh, *_wind_speed_curr_kmh, doc["daily"][0]["wind_speed"]);
+  *_wind_speed_max_kmh = new_day ? doc["daily"][0]["wind_speed"] : max3(*_wind_speed_max_kmh, *_wind_speed_curr_kmh, doc["daily"][0]["wind_speed"]);
   *_uv_index_curr = doc["current"]["uvi"];
-  *_uv_index_max = new_day ? doc["daily"][0]["uvi"] : max(*_uv_index_max, *_uv_index_curr, doc["daily"][0]["uvi"]);
+  *_uv_index_max = new_day ? doc["daily"][0]["uvi"] : max3(*_uv_index_max, *_uv_index_curr, doc["daily"][0]["uvi"]);
   *_cloudiness_curr_pc = doc["current"]["clouds"];
-  *_cloudiness_max_pc = new_day ? doc["daily"][0]["clouds"] : max(*_cloudiness_max_pc, *_cloudiness_curr_pc, doc["daily"][0]["clouds"]);
+  *_cloudiness_max_pc = new_day ? doc["daily"][0]["clouds"] : max3(*_cloudiness_max_pc, *_cloudiness_curr_pc, doc["daily"][0]["clouds"]);
   *_precipitation_chances_curr_pc = doc["hourly"]["pop"];
-  *_precipitation_chances_max_pc = new_day ? doc["daily"][0]["pop"] : max(*_precipitation_chances_max_pc, *_precipitation_chances_curr_pc, doc["daily"][0]["pop"]);
+  *_precipitation_chances_max_pc = new_day ? doc["daily"][0]["pop"] : max3(*_precipitation_chances_max_pc, *_precipitation_chances_curr_pc, doc["daily"][0]["pop"]);
   
   // Show current precipitation amount only if it's raining or snowing--the field doesn't exist otherwise
   if (doc["hourly"][0].containsKey("rain") && doc["hourly"][0]["rain"].containsKey("1h"))
@@ -195,15 +202,15 @@ void get_environment_data(
   // Show max precipitation amount only if it's raining or snowing--the field doesn't exist otherwise
   if (doc["daily"][0].containsKey("rain"))
   {
-    *_precipitation_amount_max_mm = new_day ? doc["daily"][0]["rain"].as<float>() : max(*_precipitation_amount_max_mm, *_precipitation_amount_curr_mm, doc["daily"][0]["rain"].as<float>());
+    *_precipitation_amount_max_mm = new_day ? doc["daily"][0]["rain"].as<float>() : max3(*_precipitation_amount_max_mm, *_precipitation_amount_curr_mm, doc["daily"][0]["rain"].as<float>());
   }
   else if (doc["daily"][0].containsKey("snow"))
   {
-    *_precipitation_amount_max_mm = new_day ? doc["daily"][0]["snow"].as<float>() : max(*_precipitation_amount_max_mm, *_precipitation_amount_curr_mm, doc["daily"][0]["snow"].as<float>());
+    *_precipitation_amount_max_mm = new_day ? doc["daily"][0]["snow"].as<float>() : max3(*_precipitation_amount_max_mm, *_precipitation_amount_curr_mm, doc["daily"][0]["snow"].as<float>());
   }
   else
   {
-    *_precipitation_amount_max_mm = new_day ? 0.00 : max(*_precipitation_amount_max_mm, *_precipitation_amount_curr_mm, 0.00);
+    *_precipitation_amount_max_mm = new_day ? 0.00 : max3(*_precipitation_amount_max_mm, *_precipitation_amount_curr_mm, 0.00);
   }
 
   *_sunrise = unix_tsToHHMM(doc["daily"][0]["sunrise"]);

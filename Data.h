@@ -50,7 +50,7 @@ void update_data()
   bool new_day = current_hour == 0;
 
   get_environment_data(
-    replace_highs,
+    new_day,
     // Weather data
     &weather_overview,
     &temperature_curr_c,
