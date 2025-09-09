@@ -11,6 +11,8 @@
 #define PRIMARY TFT_YELLOW
 #define SECONDARY TFT_CYAN
 
+#define THIRTY_SECONDS_MS 30000
+
 void clear_screen()
 {
   tft.fillScreen(TFT_BLACK);
@@ -255,6 +257,9 @@ void draw_daymoon_screen(
   newline();
 }
 
+/**
+ * Show the "wifi failed to connect" message for 30 seconds before restarting the ESP32
+ */
 void ShowWifiFailureScreen()
 {
   clear_screen();
@@ -263,19 +268,24 @@ void ShowWifiFailureScreen()
   tft.setTextColor(PRIMARY);
   tft.setCursor(10, 10);
   tft.print("Wifi failed to conenct");
-  delay(90000000); // permanently blocking
+  delay(THIRTY_SECONDS_MS);
+  ESP.restart();
 }
 
+/**
+ * Show the "get request failed" message for 30 seconds before restarting the ESP32
+ */
 void ShowGetFailureScreen(int code)
 {
   clear_screen();
   uint8_t text_size = 2;
   tft.setTextSize(text_size);
   tft.setTextColor(PRIMARY);
-  tft.print("GET req failure: ");
   tft.setCursor(10, 10);
+  tft.print("GET req failure: ");
   tft.print(code);
-  delay(90000000); // permanently blocking
+  delay(THIRTY_SECONDS_MS);
+  ESP.restart();
 }
 
 void draw_units_changed_screen()
