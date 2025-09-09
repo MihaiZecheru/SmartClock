@@ -273,6 +273,7 @@ void ShowGetFailureScreen(int code)
   tft.setTextSize(text_size);
   tft.setTextColor(PRIMARY);
   tft.print("GET req failure: ");
+  tft.setCursor(10, 10);
   tft.print(code);
   delay(90000000); // permanently blocking
 }
